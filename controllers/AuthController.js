@@ -1,6 +1,5 @@
 import AuthService from "../services/AuthService.js";
 import{ validationResult} from "express-validator";
-import TokenService from "../services/TokenService.js";
 
 class AuthController {
 
@@ -31,7 +30,6 @@ class AuthController {
             res.status(400).json({message: error.message})
         }
     }
-
 }
 
 
