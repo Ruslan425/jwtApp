@@ -1,6 +1,7 @@
 
 import Role from "../models/Role.js";
 import User from "../models/User.js";
+import UserToken from "../models/UserToken.js"
 import bcrypt from "bcryptjs";
 import UserResponse from "../models/UserResponse.js"
 import TokenService from "../services/TokenService.js";
@@ -13,15 +14,18 @@ class AuthService {
             throw new Error("Такой пользователь уже есть")
         }
         const userRole = await Role.findOne({value: "user"})
-        const hashPass = bcrypt.hashSync(password, 2)
-        const user = new User({
-           username: username,
-           password: hashPass,
-           roles: [userRole.value]
+        const hashPass = await bcrypt.hash(password, 2)
+        const user = await User.create({
+            username: username, 
+            password: hashPass,
+            roles: [userRole.value]
         })
-        user.save()
-        const token = TokenService.generateAccessToken(username, user.roles)
-        return new UserResponse(username, token)
+        
+        const token = TokenService.generateTokens({userId: user._id, roles: user.roles})
+
+        TokenService.saveTokens(user._id, token.refreshToken, token.accessToken)
+
+        return new UserResponse(user._id, token)
     }
 
     async login(username, password) {
@@ -29,12 +33,16 @@ class AuthService {
         if (!user) {
             throw new Error("Пользователь не найден")
         }
-        const validPass = bcrypt.compareSync(password, user.password)
+        const validPass = await bcrypt.compare(password, user.password)
         if(!validPass) {
            throw new Error("Не верный пароль")
         }
-        const token = TokenService.generateAccessToken(user.username, user.roles)
+        const token = TokenService.generateTokens(user.username, user.roles)
         return new UserResponse(user.username, token)
+    }
+
+    async ref() {
+
     }
 }
 

@@ -10,6 +10,8 @@ authRouter.post('/reg',[
 ], AuthController.reg);
 authRouter.post('/login', AuthController.login);
 
+authRouter.post('/ref', AuthController.ref)
+
 
 export default authRouter;
 

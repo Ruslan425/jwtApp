@@ -1,14 +1,25 @@
 import jwt from "jsonwebtoken";
-import dotnet from "dotenv";
+import UserToken from "../models/UserToken.js";
 
 class TokenService {
-    generateAccessToken(username, roles) {
-        const playload = {
-            username,
-            roles
+    generateTokens(playload) {
+        const accessToken = jwt.sign(playload, process.env.ACCESS_SECRET, {expiresIn: process.env.ACCESS_TOKEN_LIVE})
+        const refreshToken = jwt.sign(playload, process.env.REFRESH_SECRET, {expiresIn: process.env.REFRESH_TOKEN_LIVE})
+
+        return {
+            refreshToken,
+            accessToken
         }
-        dotnet.config()
-        return jwt.sign(playload, process.env.TOKEN_SECRET, {expiresIn: process.env.ACCESS_TOKEN_LIVE})
+    }
+
+    async saveTokens(userId, refreshToken, accessToken) {
+        const checkUser = await UserToken.findOne({user: userId})
+        if (checkUser) {
+           const newUserToken = await UserToken.findOneAndUpdate({user: userId}, {user: userId, refreshToken, accessToken}, {new: true})
+           return newUserToken
+        }
+        const userToken = await UserToken.create({user: userId, refreshToken, accessToken})
+        return userToken
     }
 }
 

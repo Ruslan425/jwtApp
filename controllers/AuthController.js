@@ -30,6 +30,14 @@ class AuthController {
             res.status(400).json({message: error.message})
         }
     }
+
+    async ref(req, res) {
+        try {
+            res.json(req)
+        } catch (error) {
+            res.status(400).json(error)
+        }
+    }
 }
 
 

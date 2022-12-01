@@ -1,9 +1,9 @@
 export default class UserResponse {
-    username
+    userId
     token
     
-    constructor(username, token) {
+    constructor(userId, token) {
         this.token = token
-        this.username = username
+        this.userId = userId
     }
 }
