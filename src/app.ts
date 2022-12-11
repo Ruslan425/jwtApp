@@ -1,6 +1,6 @@
 import express from 'express';
 import authRouter from './routers/authRouter.js';
-import dotnet from "dotenv";
+import dotnet from 'dotenv';
 
 
 

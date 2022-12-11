@@ -1,9 +1,10 @@
 import AuthService from "../services/AuthService.js";
 import{ validationResult} from "express-validator";
+import { Request, Response } from "express";
 
 class AuthController {
 
-    async reg (req, res) { 
+    async reg (req: Request, res: Response) { 
         try {
             const error = validationResult(req)
             if (!error.isEmpty()) {
@@ -14,24 +15,28 @@ class AuthController {
             const userResponse = await AuthService.registration(username, password)
             res.json(userResponse)
         } catch (error) {
-            console.log(error)
-            res.status(400).json({message: error.message})
+            if (error instanceof Error) {
+                console.log(error)
+                res.status(400).json({message: error.message})
+            }
         }
     }
 
 
-    async login(req, res) {
+    async login(req: Request, res: Response) {
         try {
             const {username, password} = req.body
             const userResponse = await AuthService.login(username, password)
             res.json(userResponse)
         } catch (error) {
-            console.log(error)
-            res.status(400).json({message: error.message})
+            if (error instanceof Error) {
+                console.log(error)
+                res.status(400).json({message: error.message})
+            }
         }
     }
 
-    async ref(req, res) {
+    async ref(req: Request, res: Response) {
         try {
             res.json(req)
         } catch (error) {
