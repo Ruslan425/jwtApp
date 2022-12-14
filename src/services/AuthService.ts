@@ -2,7 +2,7 @@
 import Role from "../models/Role.js";
 import User from "../models/User.js";
 import UserToken from "../models/UserToken.js"
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import UserResponse from "../models/UserResponse.js"
 import TokenService from "../services/TokenService.js";
 
