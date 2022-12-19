@@ -13,6 +13,7 @@ class AuthController {
             const {username, password} = req.body
 
             const userResponse = await AuthService.registration(username, password)
+            
             res.json(userResponse)
         } catch (error) {
             if (error instanceof Error) {

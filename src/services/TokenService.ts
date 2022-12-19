@@ -1,10 +1,10 @@
 import jwt from 'jsonwebtoken';
 import UserToken from "../models/UserToken.js";
-import config from './config.js';
+import config from '../config.js';
 
 
 class TokenService {
-    generateTokens(playload: string) {
+    generateTokens(playload: object) {
         const secret_accses = Buffer.from(config.secret_access, 'base64'
         ).toString('ascii') 
 

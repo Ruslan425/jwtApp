@@ -1,9 +1,5 @@
-export default class UserResponse {
+export type UserResponse = {
     userId: string
-    token: string
-    
-    constructor(userId: string, token: string) {
-        this.token = token
-        this.userId = userId
-    }
+    accessToken: string
+    refreshToken: string
 }

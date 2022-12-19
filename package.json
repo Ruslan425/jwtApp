@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "ts-node ./src/index.ts",
-    "dev": "npx nodemon",
+    "dev": "npx nodemon ./src/index.ts",
     "test": "npx jest"
   },
   "author": "",
