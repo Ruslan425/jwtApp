@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken';
-import UserToken from "../models/UserToken.js";
-
+import UserToken from "../models/UserToken";
 
 
 class TokenService {
@@ -15,7 +14,7 @@ class TokenService {
         }
     }
 
-    async saveTokens(userId: any, refreshToken: string, accessToken: string) {
+    async saveTokens(userId: any, refreshToken: string, accessToken: string){
         const checkUser = await UserToken.findOne({user: userId})
         if (checkUser) {
            const newUserToken = await UserToken.findOneAndUpdate({user: userId}, {user: userId, refreshToken, accessToken}, {new: true})
@@ -23,6 +22,17 @@ class TokenService {
         }
         const userToken = await UserToken.create({user: userId, refreshToken, accessToken})
         return userToken
+    }
+
+    async deleteTokens(refreshToken: string | undefined) {
+        const deleteToken = await UserToken.deleteOne({refreshToken: refreshToken})
+        console.log(deleteToken)
+        if (deleteToken.deletedCount == 1) {
+            return 'logout'
+        } else {
+            return 'Some Error'
+        }
+        
     }
 }
 

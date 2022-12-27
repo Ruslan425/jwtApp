@@ -4,4 +4,6 @@ module.exports = {
   testEnvironment: 'node',
   rootDir: './src/tests',
   verbose: true,
+  forceExit: true,
+  detectOpenHandles: true,
 };

@@ -23,7 +23,7 @@ class AuthService {
             })
         }
         
-        const token = TokenService.generateTokens({userId: user._id, roles: user.roles})
+        const token = await TokenService.generateTokens({userId: user._id, roles: user.roles})
 
         TokenService.saveTokens(user._id, token.refreshToken, token.accessToken)
 
@@ -42,7 +42,7 @@ class AuthService {
         if(!validPass) {
            throw new Error("Неверный пароль")
         }
-        const token = TokenService.generateTokens({userId: user._id, roles: user.roles})
+        const token = await TokenService.generateTokens({userId: user._id, roles: user.roles})
         return {
             userId: user._id.toString(), 
             accessToken: token.accessToken, 
@@ -51,6 +51,10 @@ class AuthService {
 
     async ref() {
 
+    }
+
+    async logout(refreshToken: string) {
+        
     }
 }
 
