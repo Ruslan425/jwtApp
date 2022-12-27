@@ -44,6 +44,10 @@ class AuthController {
             res.status(400).json(error)
         }
     }
+
+    async logout(req: Request, res: Response) {
+        
+    }
 }
 
 

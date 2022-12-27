@@ -1,18 +1,13 @@
 import jwt from 'jsonwebtoken';
 import UserToken from "../models/UserToken.js";
-import config from '../config.js';
+
 
 
 class TokenService {
     generateTokens(playload: object) {
-        const secret_accses = Buffer.from(config.secret_access, 'base64'
-        ).toString('ascii') 
 
-        const secret_refresh = Buffer.from(config.secret_refresh, 'base64'
-        ).toString('ascii') 
-        
-        const accessToken = jwt.sign(playload,secret_accses, {expiresIn: process.env.ACCESS_TOKEN_LIVE})
-        const refreshToken = jwt.sign(playload,secret_refresh , {expiresIn: process.env.REFRESH_TOKEN_LIVE})
+        const accessToken = jwt.sign(playload, process.env.ACCESS_SECRET!!, {expiresIn: process.env.ACCESS_TOKEN_LIVE})
+        const refreshToken = jwt.sign(playload, process.env.REFRESH_SECRET!! , {expiresIn: process.env.REFRESH_TOKEN_LIVE})
 
         return {
             refreshToken,
