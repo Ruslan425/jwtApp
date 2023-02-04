@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import UserToken from "../models/UserToken.js";
+import UserTokenImp from "../models/UserToken";
 
 class TokenService {
     generateTokens(playload: object) {
@@ -14,19 +14,19 @@ class TokenService {
     }
 
     async saveTokens(userId: any, refreshToken: string, accessToken: string){
-        const checkUser = await UserToken.findOne({user: userId})
+        const checkUser = await UserTokenImp.findOne({user: userId})
         if (checkUser) {
-            return UserToken.findOneAndUpdate({user: userId}, {
+            return UserTokenImp.findOneAndUpdate({user: userId}, {
                 user: userId,
                 refreshToken,
                 accessToken
             }, {new: true});
         }
-        return await UserToken.create({user: userId, refreshToken, accessToken})
+        return await UserTokenImp.create({user: userId, refreshToken, accessToken})
     }
 
     async deleteTokens(refreshToken: string | undefined) {
-        const deleteToken = await UserToken.deleteOne({refreshToken: refreshToken})
+        const deleteToken = await UserTokenImp.deleteOne({refreshToken: refreshToken})
         console.log(deleteToken)
         if (deleteToken.deletedCount == 1) {
             return 'logout'

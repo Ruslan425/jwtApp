@@ -1,21 +1,21 @@
-import Role from "../models/Role.js";
-import User from "../models/User.js";
 import bcrypt from 'bcryptjs';
 import { UserResponse } from "../models/UserResponse.js"
 import TokenService from "../services/TokenService.js";
+import UserImp from "../models/User.js";
+import RoleImpl from "../models/Role.js";
 
 class AuthService {
 
     async registration(username: string, password: string): Promise<UserResponse> {
-        const check = await User.findOne({username})
+        const check = await UserImp.findOne({username})
         if(check) {
             throw new Error("Такой пользователь уже есть")
         }
-        const userRole = await Role.findOne({value: "user"})
+        const userRole = await RoleImpl.findOne({value: "user"})
         const hashPass = await bcrypt.hash(password, 2)
-        let user = new User()
+        let user = new UserImp()
         if (userRole) {
-            user = await User.create({
+            user = await UserImp.create({
                 username: username, 
                 password: hashPass,
                 roles: [userRole.value]
@@ -33,7 +33,7 @@ class AuthService {
     }
 
     async login(username: String, password: string): Promise<UserResponse> {
-        const user = await User.findOne({username})
+        const user = await UserImp.findOne({username})
         if (!user) {
             throw new Error("Пользователь не найден")
         }

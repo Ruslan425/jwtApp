@@ -1,8 +1,8 @@
-import TokenService from "../services/TokenService";
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import mongoose from 'mongoose';
 import dotnet from 'dotenv';
 import { ObjectId } from "mongodb";
+import TokenService from "../services/TokenService";
 
 
 describe('Testing logout function in TokenService' ,() => {
