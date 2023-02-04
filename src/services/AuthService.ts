@@ -1,8 +1,8 @@
 import bcrypt from 'bcryptjs';
-import { UserResponse } from "../models/UserResponse.js"
-import TokenService from "../services/TokenService.js";
-import UserImp from "../models/User.js";
-import RoleImpl from "../models/Role.js";
+import { UserResponse } from "../models/UserResponse"
+import TokenService from "../services/TokenService";
+import UserImp from "../models/User";
+import RoleImpl from "../models/Role";
 
 class AuthService {
 

@@ -1,11 +1,15 @@
-import express from 'express';
-import authRouter from './routers/authRouter.js';
-import dotnet from 'dotenv';
+import express, {Express} from 'express';
+import authRouter from './routers/authRouter';
+import mongoose from "mongoose";
 
-const app = express()
-dotnet.config(); 
+export default async function start(url: string){
 
-app.use(express.json())
-app.use('/auth', authRouter)
+    const app: Express = express()
+    await mongoose.connect(url)
 
-export default app;
+    app.use(express.json())
+    app.use('/auth', authRouter)
+
+    return app
+}
+

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import AuthController from "../controllers/AuthController.js";
+import AuthController from "../controllers/AuthController";
 import { check } from "express-validator";
 
 const authRouter = Router();
@@ -10,7 +10,7 @@ authRouter.post('/reg',[
 ], AuthController.reg);
 authRouter.post('/login', AuthController.login);
 
-authRouter.post('/ref', AuthController.ref)
+authRouter.get('/ref', AuthController.ref)
 
 authRouter.post('/logout', AuthController.logout)
 

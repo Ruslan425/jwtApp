@@ -1,6 +1,7 @@
-import AuthService from "../services/AuthService.js";
+import AuthService from "../services/AuthService";
 import{ validationResult} from "express-validator";
 import { Request, Response } from "express";
+import UserImp from "../models/User";
 
 class AuthController {
 
@@ -39,9 +40,13 @@ class AuthController {
 
     async ref(req: Request, res: Response) {
         try {
-            res.json(req)
+            const users = await UserImp.find()
+            res.json({
+                users
+            })
         } catch (error) {
-            res.status(400).json(error)
+            console.log(error)
+            res.status(500).json(error)
         }
     }
 
