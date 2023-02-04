@@ -1,7 +1,11 @@
 import { Schema, model } from "mongoose";
 
-const Role = new Schema({
+export interface Role {
+    value: string
+}
+
+const RoleImpl = new Schema<Role>({
     value: {type: String, unique: true, default: "user"}
 })
 
-export default model('Role', Role);
+export default model<Role>('Role', RoleImpl);

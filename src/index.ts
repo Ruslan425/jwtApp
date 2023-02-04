@@ -1,11 +1,10 @@
 import app from './app.js'
 import mongoose from 'mongoose';
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
-                      
-async function start(){
+export async function start(url: string){
     try {
-        await mongoose.connect('mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.5.1')
+        await mongoose.connect(url)
         app.listen(PORT, () => {
             console.log(`Server start on PORT: ${PORT}`)
         } )
@@ -14,4 +13,6 @@ async function start(){
     }
 }
 
-start()
+const url = process.env.DB_URL!
+
+start(url).then(r => {})

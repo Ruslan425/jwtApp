@@ -1,4 +1,3 @@
-
 import Role from "../models/Role.js";
 import User from "../models/User.js";
 import bcrypt from 'bcryptjs';
@@ -7,7 +6,7 @@ import TokenService from "../services/TokenService.js";
 
 class AuthService {
 
-    async registration(username: String, password: string): Promise<UserResponse> {
+    async registration(username: string, password: string): Promise<UserResponse> {
         const check = await User.findOne({username})
         if(check) {
             throw new Error("Такой пользователь уже есть")
@@ -23,9 +22,9 @@ class AuthService {
             })
         }
         
-        const token = await TokenService.generateTokens({userId: user._id, roles: user.roles})
+        const token = TokenService.generateTokens({userId: user._id, roles: user.roles})
 
-        TokenService.saveTokens(user._id, token.refreshToken, token.accessToken)
+        await TokenService.saveTokens(user._id, token.refreshToken, token.accessToken)
 
         return {
             userId: user._id.toString(), 
@@ -42,7 +41,7 @@ class AuthService {
         if(!validPass) {
            throw new Error("Неверный пароль")
         }
-        const token = await TokenService.generateTokens({userId: user._id, roles: user.roles})
+        const token = TokenService.generateTokens({userId: user._id, roles: user.roles})
         return {
             userId: user._id.toString(), 
             accessToken: token.accessToken, 

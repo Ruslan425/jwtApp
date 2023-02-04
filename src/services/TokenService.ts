@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken';
-import UserToken from "../models/UserToken";
-
+import UserToken from "../models/UserToken.js";
 
 class TokenService {
     generateTokens(playload: object) {
@@ -17,11 +16,13 @@ class TokenService {
     async saveTokens(userId: any, refreshToken: string, accessToken: string){
         const checkUser = await UserToken.findOne({user: userId})
         if (checkUser) {
-           const newUserToken = await UserToken.findOneAndUpdate({user: userId}, {user: userId, refreshToken, accessToken}, {new: true})
-           return newUserToken
+            return UserToken.findOneAndUpdate({user: userId}, {
+                user: userId,
+                refreshToken,
+                accessToken
+            }, {new: true});
         }
-        const userToken = await UserToken.create({user: userId, refreshToken, accessToken})
-        return userToken
+        return await UserToken.create({user: userId, refreshToken, accessToken})
     }
 
     async deleteTokens(refreshToken: string | undefined) {

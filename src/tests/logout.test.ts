@@ -5,7 +5,7 @@ import dotnet from 'dotenv';
 import { ObjectId } from "mongodb";
 
 
-describe('Testing logout function in TokenServise' ,() => {
+describe('Testing logout function in TokenService' ,() => {
     beforeAll(async ()=> {
         dotnet.config(); 
         const mongoMemory = await MongoMemoryServer.create()
@@ -24,7 +24,7 @@ describe('Testing logout function in TokenServise' ,() => {
         expect(result).toBe('logout')
     })
 
-    it('error on delite from UserToken model', async () => {
+    it('error on delete from UserToken model', async () => {
        const result = await TokenService.deleteTokens("error") 
        expect(result).toBe('Some Error')
     })
