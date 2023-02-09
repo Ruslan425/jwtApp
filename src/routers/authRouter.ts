@@ -10,9 +10,11 @@ authRouter.post('/reg',[
 ], AuthController.reg);
 authRouter.post('/login', AuthController.login);
 
-authRouter.get('/ref', AuthController.ref)
+authRouter.get('/get_list', AuthController.getUsersList)
 
 authRouter.post('/logout', AuthController.logout)
+
+authRouter.post('/refresh', AuthController.refreshTokens)
 
 
 export default authRouter;

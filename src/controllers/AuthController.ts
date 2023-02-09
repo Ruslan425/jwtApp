@@ -1,11 +1,14 @@
-import AuthService from "../services/AuthService";
-import{ validationResult} from "express-validator";
-import { Request, Response } from "express";
-import UserImp from "../models/User";
+import AuthService, {Payload} from "../services/AuthService";
+import {validationResult} from "express-validator";
+import e, {Request, Response} from "express";
+import {User} from "../models/User";
+import jwt from 'jsonwebtoken'
+import RoleImpl from "../models/Role";
+import MyError from "../error/MyError";
 
 class AuthController {
 
-    async reg (req: Request, res: Response) { 
+    async reg(req: Request, res: Response) {
         try {
             const error = validationResult(req)
             if (!error.isEmpty()) {
@@ -14,7 +17,7 @@ class AuthController {
             const {username, password} = req.body
 
             const userResponse = await AuthService.registration(username, password)
-            
+
             res.json(userResponse)
         } catch (error) {
             if (error instanceof Error) {
@@ -38,20 +41,27 @@ class AuthController {
         }
     }
 
-    async ref(req: Request, res: Response) {
+    async getUsersList(req: Request, res: Response) {
         try {
-            const users = await UserImp.find()
-            res.json({
-                users
-            })
+            const accessToken = req.headers.authorization
+            const users: Array<User> = await AuthService.getUsersList(accessToken)
+            res.status(200).json({users})
         } catch (error) {
             console.log(error)
-            res.status(500).json(error)
+            const myError = error as MyError
+            res.status(myError.status ?? 500).json({
+                message: myError.message
+            })
         }
     }
 
+    async refreshTokens(req: Request, res: Response) {
+
+        await AuthService.getNewTokens()
+    }
+
     async logout(req: Request, res: Response) {
-        
+
     }
 }
 

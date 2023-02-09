@@ -1,11 +1,12 @@
-import jwt from 'jsonwebtoken';
+import jwt, {JwtPayload} from 'jsonwebtoken';
 import UserTokenImp from "../models/UserToken";
+import {Payload} from "./AuthService";
 
 class TokenService {
-    generateTokens(playload: object) {
+    generateTokens(payload: Payload) {
 
-        const accessToken = jwt.sign(playload, process.env.ACCESS_SECRET!!, {expiresIn: process.env.ACCESS_TOKEN_LIVE})
-        const refreshToken = jwt.sign(playload, process.env.REFRESH_SECRET!! , {expiresIn: process.env.REFRESH_TOKEN_LIVE})
+        const accessToken = jwt.sign(payload, process.env.ACCESS_SECRET!!, {expiresIn: process.env.ACCESS_TOKEN_LIVE})
+        const refreshToken = jwt.sign(payload, process.env.REFRESH_SECRET!! , {expiresIn: process.env.REFRESH_TOKEN_LIVE})
 
         return {
             refreshToken,
@@ -27,7 +28,6 @@ class TokenService {
 
     async deleteTokens(refreshToken: string | undefined) {
         const deleteToken = await UserTokenImp.deleteOne({refreshToken: refreshToken})
-        console.log(deleteToken)
         if (deleteToken.deletedCount == 1) {
             return 'logout'
         } else {
