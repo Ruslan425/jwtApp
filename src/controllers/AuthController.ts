@@ -5,6 +5,7 @@ import {User} from "../models/User";
 import jwt from 'jsonwebtoken'
 import RoleImpl from "../models/Role";
 import MyError from "../error/MyError";
+import ErrnoException = NodeJS.ErrnoException;
 
 class AuthController {
 
@@ -21,7 +22,6 @@ class AuthController {
             res.json(userResponse)
         } catch (error) {
             if (error instanceof Error) {
-                console.log(error)
                 res.status(400).json({message: error.message})
             }
         }
@@ -35,7 +35,6 @@ class AuthController {
             res.json(userResponse)
         } catch (error) {
             if (error instanceof Error) {
-                console.log(error)
                 res.status(400).json({message: error.message})
             }
         }
@@ -47,7 +46,6 @@ class AuthController {
             const users: Array<User> = await AuthService.getUsersList(accessToken)
             res.status(200).json({users})
         } catch (error) {
-            console.log(error)
             const myError = error as MyError
             res.status(myError.status ?? 500).json({
                 message: myError.message
@@ -56,8 +54,18 @@ class AuthController {
     }
 
     async refreshTokens(req: Request, res: Response) {
-
-        await AuthService.getNewTokens()
+        try {
+            const { userId, refreshToken } = req.body
+            const userResponse = await AuthService.getNewTokens(userId, refreshToken)
+            return res.status(200).json(userResponse)
+        } catch (error) {
+            if (error instanceof Error) {
+                console.log(error)
+                res.status(500).json({
+                    message: error.message
+                })
+            }
+        }
     }
 
     async logout(req: Request, res: Response) {

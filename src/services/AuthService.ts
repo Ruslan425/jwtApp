@@ -17,7 +17,7 @@ class AuthService {
 
     async registration(username: string, password: string): Promise<UserResponse> {
         const check = await UserImp.findOne({username})
-        if(check) {
+        if (check) {
             throw new Error("Такой пользователь уже есть")
         }
         const userRole = await RoleImpl.findOne({value: "user"})
@@ -25,7 +25,7 @@ class AuthService {
         let user = new UserImp()
         if (userRole) {
             user = await UserImp.create({
-                username: username, 
+                username: username,
                 password: hashPass,
                 roles: [userRole._id]
             })
@@ -38,9 +38,10 @@ class AuthService {
         const token = TokenService.generateTokens(payload)
         await TokenService.saveTokens(user._id, token.refreshToken, token.accessToken)
         return {
-            userId: user._id.toString(), 
-            accessToken: token.accessToken, 
-            refreshToken: token.refreshToken}
+            userId: user._id.toString(),
+            accessToken: token.accessToken,
+            refreshToken: token.refreshToken
+        }
     }
 
     async login(username: string, password: string): Promise<UserResponse> {
@@ -49,8 +50,8 @@ class AuthService {
             throw new Error("Пользователь не найден")
         }
         const validPass = await bcrypt.compare(password, user.password)
-        if(!validPass) {
-           throw new Error("Неверный пароль")
+        if (!validPass) {
+            throw new Error("Неверный пароль")
         }
 
         const payload: Payload = {
@@ -61,9 +62,10 @@ class AuthService {
         await TokenService.saveTokens(user._id, token.refreshToken, token.accessToken)
 
         return {
-            userId: user._id.toString(), 
-            accessToken: token.accessToken, 
-            refreshToken: token.refreshToken}
+            userId: user._id.toString(),
+            accessToken: token.accessToken,
+            refreshToken: token.refreshToken
+        }
     }
 
     async logout(refreshToken: string) {
@@ -71,7 +73,29 @@ class AuthService {
     }
 
     async getNewTokens(userId: string, refreshToken: string) {
+        const user = await UserImp.findById(userId)
+        if (!user) {
+            throw new MyError(404, 'User does not exist')
+        }
 
+        try {
+            await jwt.verify(refreshToken, process.env.REFRESH_SECRET!!)
+        } catch (error) {
+            console.log(error)
+            throw new MyError(401, 'Unauthorized')
+        }
+        const newPayload: Payload = {
+            userId: user._id,
+            roleId: user.roles[0]
+        }
+        const newTokens = TokenService.generateTokens(newPayload)
+        await TokenService.saveTokens(user._id, newTokens.refreshToken, newTokens.accessToken)
+
+        return {
+            userId: user._id,
+            refreshToken: newTokens.refreshToken,
+            accessToken: newTokens.accessToken
+        }
     }
 
 
@@ -88,7 +112,7 @@ class AuthService {
         }
 
         const payload = userInfo as Payload
-        console.log(payload)
+
         const role = await RoleImpl.findById(payload.roleId)
 
         if (role?.value === 'admin') {

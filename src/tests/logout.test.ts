@@ -180,11 +180,11 @@ describe('Testing logout function in TokenService', () => {
 
         const refreshToken = {
             userId: userTokens.body.userId,
-            refreshToken: userTokens.body.resfreshToken
+            refreshToken: userTokens.body.refreshToken
         }
 
         const expectedObject: UserResponse = {
-            userId: expect.any(Types.ObjectId),
+            userId: expect.any(String),
             accessToken: expect.any(String),
             refreshToken: expect.any(String)
         }
