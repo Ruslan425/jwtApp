@@ -35,8 +35,6 @@ describe('Testing logout function in TokenService', () => {
     })
 
     it('Admin User get all users', async () => {
-
-
         const password: string = "pass"
         const username: string = "admin"
         const hashPass = await bcrypt.hash(password, 2)
@@ -65,7 +63,7 @@ describe('Testing logout function in TokenService', () => {
             }]
         }
         const response = await supertest(app)
-            .get('/auth/get_list')
+            .get('/utils/get_list')
             .set(auth)
             .expect(200)
 
@@ -79,7 +77,7 @@ describe('Testing logout function in TokenService', () => {
             message: 'Missing authorization token'
         }
         const response = await supertest(app)
-            .get('/auth/get_list')
+            .get('/utils/get_list')
             .expect(401)
 
         expect(response.body).toMatchObject(expectedError)
@@ -99,7 +97,7 @@ describe('Testing logout function in TokenService', () => {
             message: '"Forbidden". The client does not have permission.'
         }
         const response = await supertest(app)
-            .get('/auth/get_list')
+            .get('/utils/get_list')
             .set(auth)
             .expect(403)
 
@@ -137,7 +135,7 @@ describe('Testing logout function in TokenService', () => {
         }
 
         await supertest(app)
-            .get('/auth/get_list')
+            .get('/utils/get_list')
             .set(auth)
             .expect(401)
 
@@ -174,7 +172,7 @@ describe('Testing logout function in TokenService', () => {
         }
 
         await supertest(app)
-            .get('/auth/get_list')
+            .get('/utils/get_list')
             .send(auth)
             .expect(401)
 
@@ -197,6 +195,19 @@ describe('Testing logout function in TokenService', () => {
         expect(response.body).toMatchObject(expectedObject)
 
         process.env.ACCESS_TOKEN_LIVE = accessTokenLive
+    })
+
+    it('Checking logout fun, delete user tokens from db', async () =>{
+
+
+        await supertest(app)
+            .get('/auth/logout')
+            .set(auth)
+            .expect(200)
+
+
+        expect(expectedObject).toBeUndefined()
+
     })
 
 })

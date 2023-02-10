@@ -1,11 +1,7 @@
-import AuthService, {Payload} from "../services/AuthService";
+import AuthService from "../services/AuthService";
 import {validationResult} from "express-validator";
 import e, {Request, Response} from "express";
-import {User} from "../models/User";
-import jwt from 'jsonwebtoken'
-import RoleImpl from "../models/Role";
-import MyError from "../error/MyError";
-import ErrnoException = NodeJS.ErrnoException;
+
 
 class AuthController {
 
@@ -37,19 +33,6 @@ class AuthController {
             if (error instanceof Error) {
                 res.status(400).json({message: error.message})
             }
-        }
-    }
-
-    async getUsersList(req: Request, res: Response) {
-        try {
-            const accessToken = req.headers.authorization
-            const users: Array<User> = await AuthService.getUsersList(accessToken)
-            res.status(200).json({users})
-        } catch (error) {
-            const myError = error as MyError
-            res.status(myError.status ?? 500).json({
-                message: myError.message
-            })
         }
     }
 

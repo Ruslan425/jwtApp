@@ -1,6 +1,6 @@
 import jwt, {JwtPayload} from 'jsonwebtoken';
 import UserTokenImp from "../models/UserToken";
-import {Payload} from "./AuthService";
+import Payload from "../models/Payload";
 
 class TokenService {
     generateTokens(payload: Payload) {
