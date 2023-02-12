@@ -10,7 +10,7 @@ authRouter.post('/reg',[
 ], AuthController.reg);
 authRouter.post('/login', AuthController.login);
 
-authRouter.post('/logout', AuthController.logout)
+authRouter.get('/logout', AuthController.logout)
 
 authRouter.post('/refresh', AuthController.refreshTokens)
 

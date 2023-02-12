@@ -8,6 +8,7 @@ import RoleImpl, {Role} from "../models/Role";
 import bcrypt from "bcryptjs";
 import {UserResponse} from "../models/UserResponse";
 import {Types} from "mongoose";
+import UserTokenImp from "../models/UserToken";
 
 describe('Testing logout function in TokenService', () => {
 
@@ -197,16 +198,32 @@ describe('Testing logout function in TokenService', () => {
         process.env.ACCESS_TOKEN_LIVE = accessTokenLive
     })
 
-    it('Checking logout fun, delete user tokens from db', async () =>{
+    it('Checking logout fun, delete user tokens from db', async () => {
 
+        const newUser = {
+            username: 'Aew@ew.re',
+            password: 'Testtes5'
+        }
+
+        const userTokens = await supertest(app)
+            .post('/auth/reg')
+            .send(newUser)
+            .expect(200)
+
+        const accessToken = userTokens.body.accessToken
+
+        const auth = {
+            authorization: accessToken
+        }
 
         await supertest(app)
             .get('/auth/logout')
             .set(auth)
             .expect(200)
 
+        const expectedObject = await UserTokenImp.findOne({accessToken})
 
-        expect(expectedObject).toBeUndefined()
+        expect(expectedObject).toBeNull()
 
     })
 

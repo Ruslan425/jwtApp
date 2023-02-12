@@ -6,6 +6,7 @@ import RoleImpl from "../models/Role";
 import jwt, {JwtPayload} from "jsonwebtoken";
 import MyError from "../error/MyError";
 import Payload from "../models/Payload";
+import UserTokenImp from "../models/UserToken";
 
 
 class AuthService {
@@ -89,8 +90,15 @@ class AuthService {
         }
     }
 
-    async logout(refreshToken: string) {
+    async logout(accessToken: string | undefined) {
 
+        if (!accessToken) {
+            throw new MyError(401, 'Unauthorized')
+        }
+        const check = await UserTokenImp.findOneAndDelete({accessToken})
+        if (!check) {
+            throw new MyError(404, 'User not found')
+        }
     }
 
 }

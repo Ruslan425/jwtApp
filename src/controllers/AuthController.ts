@@ -1,6 +1,7 @@
 import AuthService from "../services/AuthService";
 import {validationResult} from "express-validator";
 import e, {Request, Response} from "express";
+import MyError from "../error/MyError";
 
 
 class AuthController {
@@ -38,7 +39,7 @@ class AuthController {
 
     async refreshTokens(req: Request, res: Response) {
         try {
-            const { userId, refreshToken } = req.body
+            const {userId, refreshToken} = req.body
             const userResponse = await AuthService.getNewTokens(userId, refreshToken)
             return res.status(200).json(userResponse)
         } catch (error) {
@@ -52,8 +53,19 @@ class AuthController {
     }
 
     async logout(req: Request, res: Response) {
-
+        try {
+            const accessToken = req.headers.authorization
+            await AuthService.logout(accessToken)
+            return res.status(200).json()
+        } catch (error) {
+            console.log(error)
+            const myError = error as MyError
+            res.status(myError.status ?? 500).json({
+                message: myError.message
+            })
+        }
     }
+
 }
 
 
