@@ -1,11 +1,12 @@
 import jwt, {JwtPayload} from 'jsonwebtoken';
 import UserTokenImp from "../models/UserToken";
 import Payload from "../models/Payload";
+import {accessTokenLive} from "../Config";
 
 class TokenService {
     generateTokens(payload: Payload) {
 
-        const accessToken = jwt.sign(payload, process.env.ACCESS_SECRET!!, {expiresIn: process.env.ACCESS_TOKEN_LIVE})
+        const accessToken = jwt.sign(payload, process.env.ACCESS_SECRET!!, {expiresIn: accessTokenLive()})
         const refreshToken = jwt.sign(payload, process.env.REFRESH_SECRET!! , {expiresIn: process.env.REFRESH_TOKEN_LIVE})
 
         return {

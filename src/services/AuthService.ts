@@ -18,6 +18,9 @@ class AuthService {
         }
         const userRole = await RoleImpl.findOne({value: "user"})
         const hashPass = await bcrypt.hash(password, 2)
+
+        console.log(hashPass)
+
         let user = new UserImp()
         if (userRole) {
             user = await UserImp.create({

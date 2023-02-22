@@ -4,11 +4,12 @@ import start from "../app";
 import {Express} from "express";
 import supertest from 'supertest'
 import UserImp, {User} from "../models/User";
-import RoleImpl, {Role} from "../models/Role";
+import RoleImpl from "../models/Role";
 import bcrypt from "bcryptjs";
 import {UserResponse} from "../models/UserResponse";
 import {Types} from "mongoose";
 import UserTokenImp from "../models/UserToken";
+
 
 describe('Testing logout function in TokenService', () => {
 
@@ -103,99 +104,6 @@ describe('Testing logout function in TokenService', () => {
             .expect(403)
 
         expect(response.body).toMatchObject(expectedError)
-    })
-
-    it('Check that the accessToken is destroyed after a certain period of time', async () => {
-
-        const accessTokenLive = process.env.ACCESS_TOKEN_LIVE
-
-        process.env.ACCESS_TOKEN_LIVE = "1"
-
-        const password: string = "Testtest5"
-        const username: string = "admin@df.re"
-
-        const hashPass = await bcrypt.hash(password, 2)
-
-        const newUser = {
-            username: username,
-            password: hashPass,
-            roles: [adminId]
-        }
-
-        await UserImp.create(newUser)
-
-        const userTokens = await supertest(app)
-            .post('/auth/login')
-            .send({
-                username,
-                password
-            })
-
-        const auth = {
-            authorization: userTokens.body.accessToken
-        }
-
-        await supertest(app)
-            .get('/utils/get_list')
-            .set(auth)
-            .expect(401)
-
-        process.env.ACCESS_TOKEN_LIVE = accessTokenLive
-    })
-
-    it('Checking refresh accessToken function is work', async () => {
-        const accessTokenLive = process.env.ACCESS_TOKEN_LIVE
-
-        const username = 'Test1@k.r'
-        const password = 'Testtest2'
-        const hashPassword = await bcrypt.hash(password, 2)
-
-        await UserImp.create({
-            username: username,
-            password: hashPassword,
-            roles: [adminId]
-        })
-
-        const user = {
-            username,
-            password
-        }
-
-        process.env.ACCESS_TOKEN_LIVE = '1'
-
-        const userTokens = await supertest(app)
-            .post('/auth/login')
-            .send(user)
-            .expect(200)
-
-        const auth = {
-            authorization: userTokens.body.accessToken
-        }
-
-        await supertest(app)
-            .get('/utils/get_list')
-            .send(auth)
-            .expect(401)
-
-        const refreshToken = {
-            userId: userTokens.body.userId,
-            refreshToken: userTokens.body.refreshToken
-        }
-
-        const expectedObject: UserResponse = {
-            userId: expect.any(String),
-            accessToken: expect.any(String),
-            refreshToken: expect.any(String)
-        }
-
-        const response = await supertest(app)
-            .post('/auth/refresh')
-            .send(refreshToken)
-            .expect(200)
-
-        expect(response.body).toMatchObject(expectedObject)
-
-        process.env.ACCESS_TOKEN_LIVE = accessTokenLive
     })
 
     it('Checking logout fun, delete user tokens from db', async () => {

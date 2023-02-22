@@ -1,6 +1,6 @@
 import AuthService from "../services/AuthService";
 import {validationResult} from "express-validator";
-import e, {Request, Response} from "express";
+import {Request, Response} from "express";
 import MyError from "../error/MyError";
 
 
@@ -18,6 +18,7 @@ class AuthController {
 
             res.json(userResponse)
         } catch (error) {
+            console.log(error)
             if (error instanceof Error) {
                 res.status(400).json({message: error.message})
             }
