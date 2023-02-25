@@ -10,7 +10,6 @@ import UserTokenImp from "../models/UserToken";
 
 
 class AuthService {
-
     async registration(username: string, password: string): Promise<UserResponse> {
         const check = await UserImp.findOne({username})
         if (check) {
@@ -18,8 +17,6 @@ class AuthService {
         }
         const userRole = await RoleImpl.findOne({value: "user"})
         const hashPass = await bcrypt.hash(password, 2)
-
-        console.log(hashPass)
 
         let user = new UserImp()
         if (userRole) {

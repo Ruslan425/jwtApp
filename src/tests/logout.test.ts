@@ -10,7 +10,6 @@ import {UserResponse} from "../models/UserResponse";
 import {Types} from "mongoose";
 import UserTokenImp from "../models/UserToken";
 
-
 describe('Testing logout function in TokenService', () => {
 
     let app: Express
@@ -86,7 +85,6 @@ describe('Testing logout function in TokenService', () => {
     })
 
     it('Check user have user role, cant get users list', async () => {
-
         const newUser = {
             username: 'Test@m.tu',
             password: 'Testtest5'

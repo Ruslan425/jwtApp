@@ -2,13 +2,12 @@ import jwt, {JwtPayload} from 'jsonwebtoken';
 import UserTokenImp from "../models/UserToken";
 import Payload from "../models/Payload";
 import {accessTokenLive} from "../Config";
+import MyError from "../error/MyError";
 
 class TokenService {
     generateTokens(payload: Payload) {
-
         const accessToken = jwt.sign(payload, process.env.ACCESS_SECRET!!, {expiresIn: accessTokenLive()})
         const refreshToken = jwt.sign(payload, process.env.REFRESH_SECRET!! , {expiresIn: process.env.REFRESH_TOKEN_LIVE})
-
         return {
             refreshToken,
             accessToken
@@ -34,7 +33,19 @@ class TokenService {
         } else {
             return 'Some Error'
         }
-        
+    }
+
+    async verificationAccessToken(accessToken: string | undefined): Promise<Payload> {
+        let userInfo: JwtPayload | string
+        if (!accessToken) {
+            throw new MyError(401, 'Missing authorization token')
+        }
+        try {
+            userInfo = await jwt.verify(accessToken, process.env.ACCESS_SECRET!!)
+        } catch (e) {
+            throw new MyError(401, 'Unauthorized')
+        }
+        return userInfo as Payload
     }
 }
 
