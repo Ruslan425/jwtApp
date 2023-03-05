@@ -10,7 +10,8 @@ class AuthController {
         try {
             const error = validationResult(req)
             if (!error.isEmpty()) {
-                return res.status(400).json(error)
+                const message = error.array()
+                return res.status(400).json(message)
             }
             const {username, password} = req.body
 

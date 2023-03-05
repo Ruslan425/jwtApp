@@ -9,7 +9,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
         const accessToken = req.headers.authorization
         const userInfo = await TokenService.verificationAccessToken(accessToken)
         const role: Role | null = await RoleImpl.findById(userInfo.roleId)
-        req.body = {...userInfo, role: role?.value}
+        req.body = {...userInfo, role: role?.value, body: req.body}
         next()
     } catch (error) {
         const myError = error as MyError
