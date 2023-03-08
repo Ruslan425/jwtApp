@@ -33,7 +33,8 @@ describe('Testing Tokens logic work', () => {
 
     it('Check that the accessToken is destroyed after a certain period of time', async () => {
 
-        jest.mocked(accessTokenLive).mockImplementation(() => '1');
+       // jest.mocked(accessTokenLive).mockImplementation(() => '1');
+        jest.mocked(accessTokenLive).mockReturnValue('1')
 
         const password: string = "Testtest5"
         const username: string = "admin@df.re"

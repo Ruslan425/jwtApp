@@ -17,7 +17,8 @@ export const getUsersList = async (req: Request, res: Response) => {
 
 export const changeRole = async (req: Request, res: Response) => {
     const userId = req.body.body.id
-    const adminRole = await RoleImpl.findOne({value: 'admin'})
+    const role = req.body.body.role
+    const adminRole = await RoleImpl.findOne({value: role})
     await UserImp.findOneAndUpdate({_id: userId}, {$set: {roles: [adminRole!._id]}})
     res.status(200).json({})
 }

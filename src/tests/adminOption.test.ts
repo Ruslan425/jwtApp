@@ -14,7 +14,6 @@ describe('Admin options', () => {
     beforeEach(async () => {
         mongoServer = await MongoMemoryServer.create()
         app = await start(mongoServer.getUri())
-        await RoleImpl.create({value: "user"})
     })
 
     afterEach(async () => {
@@ -24,6 +23,7 @@ describe('Admin options', () => {
     it('Admin can change user roles', async () => {
 
         const adminRole = await RoleImpl.create({value: "admin"})
+        const userRole = await RoleImpl.create({value: "user"})
 
         const adminUsername = 'admin@a.a'
         const adminPassword = 'Aqwertyo2'
@@ -32,20 +32,18 @@ describe('Admin options', () => {
         const usualUsername = 'Test@er.ru'
         const usualPassword = 'UserUser2'
 
-        const adminUser: User = {
+        const admin: User = {
             username: adminUsername,
             password: hashAdminPass,
             roles: [adminRole._id]
         }
-        await UserImp.create(adminUser)
-
-        const response = await supertest(app)
-            .post('/auth/reg')
-            .send({
-                username: usualUsername,
-                password: usualPassword
-            })
-            .expect(200)
+        const user: User = {
+            username: usualUsername,
+            password: usualPassword,
+            roles: [userRole._id]
+        }
+        await UserImp.create(admin)
+        const userId = await UserImp.create(user)
 
         const loginAdmin = await supertest(app)
             .post('/auth/login')
@@ -63,12 +61,12 @@ describe('Admin options', () => {
             .post('/utils/changeRole')
             .set(auth)
             .send({
-                id: response.body.userId,
+                id: userId._id,
                 role: 'admin'
             })
             .expect(200)
 
-        const usualUser = await UserImp.findById(response.body.userId)
+        const usualUser = await UserImp.findById(userId._id)
         const expectRole = await RoleImpl.findById(usualUser!.roles[0])
 
         expect(expectRole!.value).toEqual(adminRole.value)
