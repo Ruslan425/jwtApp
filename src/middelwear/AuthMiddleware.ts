@@ -1,13 +1,12 @@
 import {NextFunction, Request, Response} from "express";
-import TokenService from "../services/TokenService";
 import MyError from "../error/MyError";
 import RoleImpl, {Role} from "../models/Role";
-import UserImp, {User} from "../models/User";
+import {verificationAccessToken} from "../services/TokenService";
 
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const accessToken = req.headers.authorization
-        const userInfo = await TokenService.verificationAccessToken(accessToken)
+        const userInfo = await verificationAccessToken(accessToken)
         const role: Role | null = await RoleImpl.findById(userInfo.roleId)
         req.body = {...userInfo, role: role?.value, body: req.body}
         next()

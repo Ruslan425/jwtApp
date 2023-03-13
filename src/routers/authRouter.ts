@@ -1,18 +1,18 @@
 import { Router } from "express";
-import AuthController from "../controllers/AuthController";
 import { check } from "express-validator";
+import {login, logout, refresh, registration} from "../controllers/AuthController";
 
 const authRouter = Router();
 
 authRouter.post('/reg',[
     check('username', 'Не верная почта').isEmail(),
     check('password', 'Пароль не может быть меньше 8 символов').isLength({min: 8})
-], AuthController.reg);
-authRouter.post('/login', AuthController.login);
+], registration);
+authRouter.post('/login', login);
 
-authRouter.get('/logout', AuthController.logout)
+authRouter.get('/logout', logout)
 
-authRouter.post('/refresh', AuthController.refreshTokens)
+authRouter.post('/refresh', refresh)
 
 
 export default authRouter;

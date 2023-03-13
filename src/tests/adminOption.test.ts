@@ -5,15 +5,21 @@ import UserImp, {User} from "../models/User";
 import bcrypt from "bcryptjs";
 import supertest from "supertest";
 import {Express} from "express";
+import {Document, Types} from "mongoose";
 
 describe('Admin options', () => {
 
     let app: Express
     let mongoServer: MongoMemoryServer
+    let adminRole: Document<unknown, any, Role> & Role & { _id: Types.ObjectId }
+    let userRole: Document<unknown, any, Role> & Role & { _id: Types.ObjectId }
 
     beforeEach(async () => {
         mongoServer = await MongoMemoryServer.create()
         app = await start(mongoServer.getUri())
+        adminRole = await RoleImpl.create({value: "admin"})
+        userRole = await RoleImpl.create({value: "user"})
+
     })
 
     afterEach(async () => {
@@ -21,9 +27,6 @@ describe('Admin options', () => {
     })
 
     it('Admin can change user roles', async () => {
-
-        const adminRole = await RoleImpl.create({value: "admin"})
-        const userRole = await RoleImpl.create({value: "user"})
 
         const adminUsername = 'admin@a.a'
         const adminPassword = 'Aqwertyo2'
@@ -72,4 +75,28 @@ describe('Admin options', () => {
         expect(expectRole!.value).toEqual(adminRole.value)
     })
 
+    it('Admin can delete user', async () => {
+        const username = "user@ma.ru"
+        const pass = "Testtest3"
+        const password = await bcrypt.hash(pass, 2)
+        const user: User = {
+            username,
+            password,
+            roles: [userRole._id]
+        }
+        await UserImp.create(user)
+
+        const adminUser = "admin@admin.ru"
+        const adminPass = "AdminAdmin12"
+        const adminHashPass = await bcrypt.hash(adminPass, 2)
+        const admin: User = {
+            username: adminUser,
+            password: adminHashPass,
+            roles: [adminRole._id]
+        }
+        await UserImp.create(admin)
+
+    })
 })
+
+

@@ -117,9 +117,6 @@ describe('Testing Tokens logic work', () => {
             .expect(200)
 
         expect(response.body).toMatchObject(expectedObject)
-
     })
-
-
 
 })

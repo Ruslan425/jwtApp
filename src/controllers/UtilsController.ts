@@ -3,7 +3,7 @@ import UserImp, {User} from "../models/User";
 import MyError from "../error/MyError";
 import RoleImpl from "../models/Role";
 
-export const getUsersList = async (req: Request, res: Response) => {
+export const getUsers = async (req: Request, res: Response) => {
     try {
         const users: Array<User> = await UserImp.find();
         return res.status(200).json({users})

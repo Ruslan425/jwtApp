@@ -1,5 +1,4 @@
 import {MongoMemoryServer} from 'mongodb-memory-server'
-import TokenService from "../services/TokenService";
 import start from "../app";
 import {Express} from "express";
 import supertest from 'supertest'
@@ -9,6 +8,7 @@ import bcrypt from "bcryptjs";
 import {UserResponse} from "../models/UserResponse";
 import {Types} from "mongoose";
 import UserTokenImp from "../models/UserToken";
+import {deleteTokens} from "../services/TokenService";
 
 describe('Testing logout function in TokenService', () => {
 
@@ -31,7 +31,7 @@ describe('Testing logout function in TokenService', () => {
     })
 
     it('error on delete from UserToken model', async () => {
-        const result = await TokenService.deleteTokens("error")
+        const result = await deleteTokens("error")
         expect(result).toBe('Some Error')
     })
 
