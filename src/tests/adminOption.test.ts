@@ -61,7 +61,7 @@ describe('Admin options', () => {
         }
 
         await supertest(app)
-            .post('/utils/changeRole')
+            .post('/utils/change_role')
             .set(auth)
             .send({
                 id: userId._id,
@@ -76,6 +76,7 @@ describe('Admin options', () => {
     })
 
     it('Admin can delete user', async () => {
+
         const username = "user@ma.ru"
         const pass = "Testtest3"
         const password = await bcrypt.hash(pass, 2)
@@ -95,6 +96,22 @@ describe('Admin options', () => {
             roles: [adminRole._id]
         }
         await UserImp.create(admin)
+
+        const accessToken = await supertest(app)
+            .post('/auth/login')
+            .send({
+                username: adminUser,
+                password: adminPass
+            })
+            .expect(200)
+
+        await supertest(app)
+            .post('/utils/delete_user')
+            .set({authorization: accessToken.body.accessToken})
+            .send({user: username})
+            .expect(200)
+
+        expect(await UserImp.findOne({username})).toBeNull()
 
     })
 })

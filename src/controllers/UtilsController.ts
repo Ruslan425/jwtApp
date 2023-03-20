@@ -22,3 +22,9 @@ export const changeRole = async (req: Request, res: Response) => {
     await UserImp.findOneAndUpdate({_id: userId}, {$set: {roles: [adminRole!._id]}})
     res.status(200).json({})
 }
+
+export const deleteUser = async (req: Request, res: Response) => {
+    const userToDelete = req.body.body.user
+    await UserImp.deleteOne({username: userToDelete})
+    res.status(200).json({})
+}
